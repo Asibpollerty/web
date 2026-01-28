@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 Chat Messenger</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Экран входа -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h1>Chat Messenger</h1>
+                <p>Общайтесь с друзьями в реальном времени</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username-input" placeholder="Введите ваш username" autocomplete="off" required minlength="2">
+                </div>
+                <button type="submit" class="btn-primary">
+                    <span>Войти</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Главный экран чата -->
+    <div id="chat-screen" class="screen">
+        <div class="chat-container">
+            <!-- Боковая панель -->
+            <aside class="sidebar">
+                <!-- Профиль пользователя -->
+                <div class="sidebar-header">
+                    <div class="user-profile" id="current-user-profile">
+                        <div class="avatar" id="current-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="username" id="current-username"></span>
+                    </div>
+                    <button class="btn-icon" id="settings-btn" title="Настройки профиля">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+
+                <!-- Поиск -->
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Поиск пользователей...">
+                    <div id="search-results" class="search-results hidden"></div>
+                </div>
+
+                <!-- Список чатов -->
+                <div class="chats-list" id="chats-list">
+                    <div class="empty-chats">
+                        <i class="fas fa-comments"></i>
+                        <p>Нет активных чатов</p>
+                        <span>Найдите пользователя, чтобы начать общение</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Область чата -->
+            <main class="chat-area" id="chat-area">
+                <!-- Пустое состояние -->
+                <div class="chat-empty" id="chat-empty">
+                    <div class="chat-empty-content">
+                        <i class="fas fa-paper-plane"></i>
+                        <h2>Выберите чат</h2>
+                        <p>Выберите чат из списка или найдите нового собеседника</p>
+                    </div>
+                </div>
+
+                <!-- Активный чат -->
+                <div class="chat-active hidden" id="chat-active">
+                    <!-- Шапка чата -->
+                    <header class="chat-header">
+                        <button class="btn-icon back-btn" id="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="chat-user-info">
+                            <div class="avatar" id="chat-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <span class="username" id="chat-username"></span>
+                                <span class="status" id="chat-status">оффлайн</span>
+                            </div>
+                        </div>
+                        <button class="btn-icon" id="chat-profile-btn" title="Профиль пользователя">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </header>
+
+                    <!-- Сообщения -->
+                    <div class="messages-container" id="messages-container">
+                        <div class="messages-list" id="messages-list"></div>
+                        <div class="typing-indicator hidden" id="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <!-- Форма отправки -->
+                    <div class="message-input-container">
+                        <button class="btn-icon attach-btn" id="attach-btn" title="Прикрепить фото">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="image-input" accept="image/*" hidden>
+                        <div class="input-wrapper">
+                            <textarea id="message-input" placeholder="Напишите сообщение..." rows="1"></textarea>
+                        </div>
+                        <button class="btn-send" id="send-btn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                    <!-- Превью изображения -->
+                    <div class="image-preview hidden" id="image-preview">
+                        <img src="" alt="Preview" id="preview-image">
+                        <button class="btn-remove-image" id="remove-image-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Модальное окно настроек профиля -->
+    <div class="modal hidden" id="settings-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Настройки профиля</h2>
+                <button class="btn-icon close-modal" id="close-settings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Баннер -->
+                <div class="banner-upload" id="banner-container">
+                    <div class="banner-placeholder" id="banner-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Нажмите, чтобы загрузить баннер</span>
+                    </div>
+                    <img src="" alt="Banner" id="banner-image" class="hidden">
+                    <input type="file" id="banner-input" accept="image/*" hidden>
+                </div>
+
+                <!-- Аватар -->
+                <div class="avatar-upload">
+                    <div class="avatar-large" id="settings-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <button class="btn-change-avatar" id="change-avatar-btn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" id="avatar-input" accept="image/*" hidden>
+                </div>
+
+                <div class="profile-info">
+                    <h3 id="settings-username"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно профиля пользователя -->
+    <div class="modal hidden" id="profile-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Профиль</h2>
+                <button class="btn-icon close-modal" id="close-profile">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="banner-upload" id="profile-banner-container">
+                    <div class="banner-placeholder" id="profile-banner-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <img src="" alt="Banner" id="profile-banner-image" class="hidden">
+                </div>
+                <div class="avatar-upload">
+                    <div class="avatar-large" id="profile-modal-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profile-modal-username"></h3>
+                    <span class="profile-status" id="profile-modal-status">оффлайн</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
